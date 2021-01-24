@@ -174,6 +174,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+		//singletonObjects 缓存单例的容器池
+		/**
+		 * 这里再创建的时候去get ，singletonObjects 一定事空的为啥要这么做呢？
+		 */
 		Object singletonObject = this.singletonObjects.get(beanName);
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
@@ -188,6 +192,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				}
 			}
 		}
+		/**
+		 * 不为空直接返回，什么时候不为空呢？ 容器初始化完成之后，程序员直接getBean的时候不为空
+		 */
 		return singletonObject;
 	}
 
