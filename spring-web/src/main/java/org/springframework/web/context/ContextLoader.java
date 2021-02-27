@@ -274,6 +274,7 @@ public class ContextLoader {
 		try {
 			// Store context in local instance variable, to guarantee that
 			// it is available on ServletContext shutdown.
+			//       初始化web程序上下文
 			if (this.context == null) {
 				this.context = createWebApplicationContext(servletContext);
 			}
