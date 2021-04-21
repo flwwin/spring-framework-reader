@@ -531,6 +531,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			// Prepare the bean factory for use in this context.
 			// 主要设置一些值 prepareBeanFactory方法主要是配置BeanFactory 类加载器，Spring el表达式实现，bean前置处理器等等的属性设置
+			// 主要增强容器的功能
 			prepareBeanFactory(beanFactory);
 
 			try {
@@ -542,13 +543,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Invoke factory processors registered as beans in the context.
 				//BeanFactoryPostProcessors接口跟BeanPostProcessor类似，可以用于bean的定义进行处理，
-				// 也可以在bean初始化之前修改bean元数据。可以配置多个BeanFactoryPostProcessor，使用Order接口来控制执行顺序。
+				// 也可以在bean初始化之前修改bean元数据。可以配置多个BeanFactoryPostProcessor。
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
 				//注册所有BeanPostProcessor后置处理类，这里只是注册，不会执行任何接口方法。
 				// 具体流程跟上面BeanFactoryPostProcessor非常相似。
 				// 在PostProcessorRegistrationDelegate看下具体代码逻辑，注意与上面代码相似地方。
+				// 注册拦截bean创建的bean处理器，这里只是注册，真正的调用是在getBean时候。
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
@@ -556,9 +558,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				initMessageSource();
 
 				// Initialize event multicaster for this context.
-				//初始化ApplicationEventMulticaster事件组播器，
-				// 主要判断用户是否自定义了事件组播器，直接使用用户定义的组播器。
-				// 如果没有用户自定义组播器，默认使用SimpleApplicationEventMulticaster
+				// 初始化应用消息广播器，并放入“applicationEventMulticaster"bean 中。
 				initApplicationEventMulticaster();
 
 				// Initialize other special beans in specific context subclasses.
@@ -572,10 +572,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
-				//开始初始化我们的spring的单例类，spring的生命周期都在这个类中间/ 这个方法就是我们解析Spring IOC核心了，初始化所有Spring bean
+				// 完成剧新过程。通知生命周期处理器1ifecycleProcessor剧新过程，同时发出
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
+				//
 				finishRefresh();
 			}
 
@@ -680,6 +681,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.setBeanClassLoader(getClassLoader());
 		//设置spring el表达式的实现
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
+
+		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
+
 		/*
 		 * 添加后置处理器实现, 如果实现了相应的 Aware 接口，则注入对应的资源
 		 * 1. EnvironmentAware
@@ -689,8 +693,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		 * 5. MessageSourceAware
 		 * 6. ApplicationContextAware
 		 */
-		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
-
 		// Configure the bean factory with context callbacks.
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);

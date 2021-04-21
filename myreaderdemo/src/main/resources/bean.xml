@@ -3,7 +3,22 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="person" class="com.leven.spring.reader.Person">
+<!--	<bean id="person" class="com.leven.spring.reader.entity.Person">
 		<property name="name" value="luozhou"/>
+	</bean>
+	<bean id="car" class="com.leven.spring.reader.beans.CarFactoryBean"/>-->
+
+	<!--
+		循环依赖debug
+		1: 构造器注入方式是不支持循环依赖的，在创建的对象的时候没有办法进行获取以来的对象。
+		2：spring 通过三级缓存的方法解决 循环依赖的问题。
+
+	-->
+	<bean id="a" class="com.leven.spring.reader.cycle.A">
+		<property name="b" ref="b"/>
+	</bean>
+
+	<bean id="b" class="com.leven.spring.reader.cycle.B">
+		<property name="a" ref="a"/>
 	</bean>
 </beans>

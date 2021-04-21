@@ -1,34 +1,41 @@
 package com.leven.spring.reader;
 
-import org.springframework.beans.factory.xml.XmlBeanFactory;
+import com.leven.spring.reader.cycle.A;
+import com.leven.spring.reader.cycle.B;
+import com.leven.spring.reader.entity.Person;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.Assert;
-
-import java.util.concurrent.Semaphore;
+import org.springframework.core.env.Environment;
 
 public class Demo {
-//	@Test
-//	public void  test(){
-//		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-//		Person person= (Person) context.getBean("person");
-//		Assert.assertEquals("luozhou",person.getName());
-//	}
 
-
-	public static void main(String[] args) {
+	protected final Log logger = LogFactory.getLog(getClass());
+	@Test
+	public void  test(){
 		ApplicationContext context = new ClassPathXmlApplicationContext("bean.xml");
-		Person person= (Person) context.getBean("person");
-		//Assert.assertEquals("luozhou",person.getName());
+		A a = (A) context.getBean("a");
+		B b= (B) context.getBean("b");
+		System.out.println("a = " +a);
+		System.out.println("b = " +b);
+	}
+
+	@Test
+	public void  test01(){
+		ApplicationContext context = new ClassPathXmlApplicationContext("bean.xml");
+		Environment environment = context.getEnvironment();
+		String name = environment.getProperty("name");
+		System.out.println("name = " + name);
+	}
+
+	@Test
+	public void  test02(){
+		//ApplicationContext context = new ClassPathXmlApplicationContext("bean.xml");
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("com/leven/spring/reader");
+		Person person= (Person) applicationContext.getBean("person");
 		System.out.println("person = " + person.getName());
-
-		/*XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("bean.xml"));
-		Person person1 = (Person) bf.getBean("person");
-		System.out.println("person1.getName() = " + person1.getName());*/
-
-		//AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-
 	}
 }
