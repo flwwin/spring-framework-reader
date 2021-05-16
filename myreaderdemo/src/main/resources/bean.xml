@@ -3,10 +3,10 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-<!--	<bean id="person" class="com.leven.spring.reader.entity.Person">
+	<bean id="person" class="com.leven.spring.reader.entity.Person">
 		<property name="name" value="luozhou"/>
 	</bean>
-	<bean id="car" class="com.leven.spring.reader.beans.CarFactoryBean"/>-->
+	<bean id="car" class="com.leven.spring.reader.beans.CarFactoryBean"/>
 
 	<!--
 		循环依赖debug

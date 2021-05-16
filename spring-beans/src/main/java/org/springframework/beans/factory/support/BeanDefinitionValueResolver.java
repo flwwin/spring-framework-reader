@@ -301,6 +301,7 @@ class BeanDefinitionValueResolver {
 			}
 			else {
 				bean = this.beanFactory.getBean(refName);
+				// 获取依赖的属性
 				this.beanFactory.registerDependentBean(refName, this.beanName);
 			}
 			if (bean instanceof NullBean) {
