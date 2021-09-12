@@ -686,8 +686,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		 * 模板默认以前缀“#{”开头，以后缀“}”结尾
 		 * 可以修改默认额前缀后缀
 		 * 通过beanFactory.getBeanExpressionResolver()获得BeanExpressionResolver
-		 * 然后resolver.setExpressionPrefix("%{");resolver.setExpressionSuffix("}");
-		 *
+		 * 然后resolver.setExpressionPrefix("%{")
+		 * resolver.setExpressionSuffix("}");
 		 * 那么什么时候用到这个解析器？
 		 * 就是在Bean进行初始化后会有属性填充的一步,方法如下:
 		 * protected void populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper bw) {
